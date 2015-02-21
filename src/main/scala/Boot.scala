@@ -9,10 +9,10 @@ import scala.concurrent.duration._
 import util.Config
 
 object Boot extends App with Config {
-  implicit val system = ActorSystem("spray-template")
-  val router = system.actorOf(Props[ServiceActor], name = "serviceActor")
+  implicit val system = ActorSystem("server")
+  val serviceActor = system.actorOf(Props[ServiceActor], name = "serviceActor")
   val port = config.as[Int]("http.port")
   val interface = config.as[String]("http.interface")
   implicit val timeout = Timeout(1.second)
-  IO(Http) ? Http.Bind(router, interface = interface, port = port)
+  IO(Http) ? Http.Bind(serviceActor, interface = interface, port = port)
 }
